@@ -1,0 +1,32 @@
+type User @model
+  @key(name: "byUserAssetId", fields: ["userAssetId"]) 
+  @key(name: "byUserPackageId", fields: ["userPackageId"])   
+{
+  id: ID!
+  name: String!
+  asset: Asset @connection (fields: ["userAssetId"])
+  userAssetId: ID  
+  assetName: String
+  package: Package @connection (fields: ["userPackageId"])
+  userPackageId: ID
+  packageName: String
+}
+
+type Asset @model 
+  @key(name: "byAssetPackageId", fields: ["assetPackageId"]) 
+{
+  id: ID!
+  name: String!
+  package: Package @connection (fields: ["assetPackageId"])
+  assetPackageId: ID
+  packageName: String
+  user: [User] @connection (keyName: "byUserAssetId", fields: ["id"])
+}
+
+type Package @model 
+{
+  id: ID!
+  name: String!
+  asset: [Asset] @connection (keyName: "byAssetPackageId", fields: ["id"])
+  user: [User] @connection (keyName: "byUserPackageId", fields: ["id"])
+}
